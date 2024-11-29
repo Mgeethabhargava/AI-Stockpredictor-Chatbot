@@ -16,7 +16,7 @@ from transformers import BertTokenizer, BertForSequenceClassification, AdamW
 from sklearn.preprocessing import MultiLabelBinarizer
 from dataprocess import load_saved_model, predict_with_loaded_model, fetch_stock_data, preprocess_data, prepare_dataset,prepare_prediction_data, forecast_future_prices, multimodel, predict_intent,generate_graph
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 # Get the current script directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # Load the pre-trained AI model
@@ -190,4 +190,4 @@ def chatbot_response():
         return jsonify({"bot_reply": "I'm here to help with financial queries. Can you provide more details?"})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0",port=80,debug=False)
