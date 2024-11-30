@@ -25,7 +25,12 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
+      - name: Download model file
+        run: |
+          wget -O AI_stock_model.h5 https://github.com/Mgeethabhargava/AI-Stockpredictor-Chatbot/blob/main/aimodels/AI_stock_model.h5
+      - name: Download model file
+        run: |
+          wget -O multi_intent_model.pt https://github.com/Mgeethabhargava/AI-Stockpredictor-Chatbot/blob/main/aimodels/multi_intent_model.pt
       # Run tests using pytest
       - name: Run tests
         run: |
