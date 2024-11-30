@@ -190,4 +190,4 @@ def chatbot_response():
         return jsonify({"bot_reply": "I'm here to help with financial queries. Can you provide more details?"})
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=80,debug=False)
+    app.run(host="0.0.0.0",port=5000)
