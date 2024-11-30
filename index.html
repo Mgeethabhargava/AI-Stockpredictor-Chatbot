@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="chatApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceBot Chat</title>
+    <style>body {
+        font-family: Arial, sans-serif;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .header {
+        background-color: dodgerblue;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .hero-image {
+        width: 100%;
+        max-height: 660px;
+        object-fit: cover;
+    }
+    
+    .open-chatbot-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        border-radius: 50%;
+        background-color: dodgerblue;
+        color: white;
+        border: none;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .chatbot-popup {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 100%;
+        max-width: 400px;
+        display: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        background-color: white;
+        overflow: hidden;
+        overflow-y: auto;
+        flex-direction: column;
+    }
+    
+    /* .chat-header {
+        background-color: dodgerblue;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    } */
+    
+    /* .chat-body {
+        flex-grow: 1;
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+    } */
+    
+    /* .chat-footer {
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    } */
+    
+    /* .chat-footer .input-group input {
+        border-radius: 0.25rem;
+        flex-grow: 1;
+    } */
+    
+    .user-message span, .bot-message span {
+        display: inline-block;
+        padding: 10px;
+        border-radius: 15px;
+        margin: 5px 0;
+    }
+    
+    .user-message span {
+        background-color: #007bff;
+        color: white;
+        text-align: right;
+    }
+    
+    .bot-message span {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    /* Media Queries for Responsiveness */
+    @media (max-width: 576px) {
+        .chatbot-popup {
+            width: 95%;
+            right: 10px;
+            overflow-y: auto;
+        }
+    
+        .chat-footer .input-group input {
+            font-size: 14px;
+        }
+    
+        .user-message span, .bot-message span {
+            font-size: 14px;
+            padding: 8px;
+        }
+    
+        .hero-image {
+            max-height: 200px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .chat-footer .input-group input {
+            font-size: 15px;
+        }
+    
+        .user-message span, .bot-message span {
+            font-size: 15px;
+        }
+    }
+    
+    
+    /* Chatbot Popup */
+    .chatbot-popup {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 300px;
+        height: 400px;
+        background: white;
+        border: 1px solid #ccc;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+    
+    /* Full-Screen Mode */
+    .chatbot-popup.fullscreen {
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        margin: 0;
+    }
+    
+    /* Chat Header */
+    .chat-header {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    /* Chat Body */
+    .chat-body {
+        height: calc(100% - 90px);
+        overflow-y: auto;
+        padding: 10px;
+    }
+    
+    /* Chat Footer */
+    .chat-footer {
+        background: #f1f1f1;
+        padding: 10px;
+        display: flex;
+    }
+    
+    </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+</head>
+<body ng-controller="ChatController">
+
+<!-- Header -->
+<div class="header">
+    <h1>FinanceBot</h1>
+</div>
+
+<!-- Hero Image -->
+<div>
+    <img class="hero-image" src="https://wallpapers.com/images/high/stock-market-monitor-in-sideview-slbivda3m82w17f9.webp" alt="Finance and Business">
+</div>
+
+<!-- Open Chatbot Button -->
+<button class="open-chatbot-btn" ng-click="toggleChat()">💬</button>
+
+<!-- Chatbot Popup -->
+<div class="chatbot-popup" id="chatPopup" ng-class="{'fullscreen': isFullscreen}">
+    <div class="chat-header">
+        <strong>FinanceBot</strong>
+        <button type="button" class="btn btn-sm btn-light" ng-click="maximizeChat()">⛶</button>
+        <button type="button" class="close text-white" ng-click="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-body" id="chatBody" scroll-to-bottom="messages">
+        <div ng-repeat="message in messages track by $index" class="mb-2">
+            <div class="bot-message" ng-if="message.sender === 'bot'">
+                <p ng-if="message.text"><strong><span>[[ message.text ]]</span></strong></p>
+                <p ng-if="message.graphUrl"><img ng-src="/static/[[message.graphUrl]]" class="hero-image"></p>
+            </div>
+            <div class="user-message text-right" ng-if="message.sender === 'user'">
+                <span>[[ message.text ]]</span>
+            </div>
+        </div>
+    </div>
+    <div class="chat-footer">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Type your message..." ng-model="userInput" ng-keypress="handleKeyPress($event)">
+            <div class="input-group-append">
+                <button class="btn btn-primary" ng-click="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+app = angular.module('chatApp', [])
+app.config(function($interpolateProvider) {
+  $interpolateProvider.startSymbol('[[');
+  $interpolateProvider.endSymbol(']]');
+});
+app.directive('scrollToBottom', function($timeout) {
+    return {
+      scope: {
+        scrollToBottom: '='
+      },
+      link: function(scope, element) {
+        scope.$watchCollection('scrollToBottom', function(newVal) {
+          $timeout(function() {
+            element[0].scrollTop = element[0].scrollHeight;
+          }, 0);
+        });
+      }
+    };
+  });
+app.controller('ChatController', function($scope, $timeout, $http) {
+      
+    $scope.messages = [
+        { sender: 'bot', text: "Hi! I'm FinanceBot, your Query ChatBot ❤️" }
+    ];
+    $scope.userInput = '';
+    $scope.isFullscreen = false;
+    // Toggle chatbot visibility
+    $scope.toggleChat = function() {
+        const chatPopup = document.getElementById('chatPopup');
+        chatPopup.style.display = chatPopup.style.display === 'block' ? 'none' : 'block';
+    };
+        // Toggle full-screen mode
+        $scope.maximizeChat = function() {
+          $scope.isFullscreen = !$scope.isFullscreen;
+      };
+
+// Send user message and get bot response
+$scope.sendMessage = function() {
+  if ($scope.userInput.trim() === '') return;
+
+  // Push user's message to chat
+  $scope.messages.push({ sender: 'user', text: $scope.userInput });
+
+  const userMessage = $scope.userInput;
+  $scope.userInput = ''; // Clear input field
+
+  // Make GET request to Flask backend to get bot's response
+  $http.get('/get', { params: { msg: userMessage } })
+      .then(function(response) {
+          const botReply = response.data.bot_reply;
+          const graphUrl = response.data.graph_url || null;
+
+         // If there's a graph, push it to chat
+          if (graphUrl) {
+              $scope.messages.push({ sender: 'bot', text: botReply, graphUrl: graphUrl });
+          }
+          else{
+                // Push bot's text response
+                $scope.messages.push({ sender: 'bot', text: botReply });
+          }
+
+          // Scroll chat body to the bottom
+          const chatBody = document.getElementById('chatBody');
+          chatBody.scrollTop = chatBody.scrollHeight;
+      }, function(error) {
+          console.error('Error fetching response from backend:', error);
+      });
+};
+
+
+    // Handle "Enter" key press to send message
+    $scope.handleKeyPress = function(event) {
+        if (event.which === 13) {
+            $scope.sendMessage();
+        }
+    };
+});
+</script>
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
