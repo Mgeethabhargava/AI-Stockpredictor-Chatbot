@@ -29,7 +29,6 @@ jobs:
       # Run tests using pytest
       - name: Run tests
         run: |
-          python test_app.py
           pytest --maxfail=1 --disable-warnings -q  # Run the tests with pytest
 
       - name: Zip artifact for deployment
