@@ -1,4 +1,6 @@
 flask
+h5py
+keras
 pandas==2.2.2
 numpy==1.26.4
 alpha_vantage==3.0.0
