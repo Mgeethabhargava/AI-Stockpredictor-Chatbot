@@ -20,8 +20,9 @@ app = Flask(__name__, static_folder='static')
 # Get the current script directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # Load the pre-trained AI model
-MODEL_PATH = os.path.join(current_dir, 'AI_stock_model.h5')
-model_save_path = os.path.join(current_dir, 'multi_intent_model.pt')
+print (os.listdir())
+MODEL_PATH = os.path.join(current_dir, '/model/AI_stock_model.h5')
+model_save_path = os.path.join(current_dir, '/model/multi_intent_model.pt')
 model = load_saved_model(MODEL_PATH)
 intent_model, tokenizer, mlb, device = multimodel(model_save_path)
 # Create a directory for saving graph images
